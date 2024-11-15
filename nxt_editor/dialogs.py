@@ -373,14 +373,16 @@ class NxtWarningDialog(QtWidgets.QDialog):
 
 
 class NxtConfirmDialog(QtWidgets.QMessageBox):
+    Ok = QtWidgets.QMessageBox.StandardButton.Ok
+    Cancel = QtWidgets.QMessageBox.StandardButton.Cancel
     def __init__(self, text='Title', info='Confirm something!',
                  button_text=None, icon=QtWidgets.QMessageBox.Icon.Question):
         """Simple message box used for user confirmation
         :param text: Title text
         :param info: Main info text
         :param button_text: Custom button text dict:
-        {QtWidgets.QMessageBox.Ok: 'Custom Ok Text',
-        QtWidgets.QMessageBox.Cancel: 'Custom Cancel Text'}
+        {QtWidgets.QMessageBox.StandardButton.Ok: 'Custom Ok Text',
+        QtWidgets.QMessageBox.StandardButton.Cancel: 'Custom Cancel Text'}
         """
         super(NxtConfirmDialog, self).__init__()
         self.setText(text)

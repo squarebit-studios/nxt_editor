@@ -410,6 +410,32 @@ class NxtConfirmDialog(QtWidgets.QMessageBox):
         return False
 
 
+class CopyPrefsDialogue(NxtConfirmDialog):
+    title_text = (f'Copy version {user_dir.UPGRADE_PREFS_FROM_VERSION} '
+                  f'Preferences?')
+    button_text = {
+        NxtConfirmDialog.Ok: f'Copy v'
+                             f'{user_dir.UPGRADE_PREFS_FROM_VERSION} prefs',
+        NxtConfirmDialog.Cancel: 'Use default preferences'
+    }
+    info = ('Would you like to copy preferences from an older version of '
+            'NXT?\nSome things like the window layout may not be preserved.')
+
+    def __int__(self):
+        super(CopyPrefsDialogue, self).__init__(text=self.title_text,
+                                                info=self.info,
+                                                button_text=self.button_text)
+
+    @classmethod
+    def show_message(cls):
+        if not user_dir.UPGRADABLE_PREFS:
+            return
+        do_upgrade = super().show_message(text=cls.title_text, info=cls.info,
+                                          button_text=cls.button_text)
+        if do_upgrade:
+            user_dir.upgrade_prefs()
+
+
 class UnsavedLayersDialogue(QtWidgets.QDialog):
     @classmethod
     def save_before_exit(cls, stage_models, main_window):

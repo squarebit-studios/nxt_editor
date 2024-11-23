@@ -93,6 +93,8 @@ def launch_editor(paths=None, start_rpc=False):
         app = existing
     else:
         app = _new_qapp()
+    from nxt_editor.dialogs import CopyPrefsDialogue
+    CopyPrefsDialogue.show_message()  # Show message if upgrade possible
     instance = show_new_editor(paths, start_rpc)
     app.setActiveWindow(instance)
     if not existing:

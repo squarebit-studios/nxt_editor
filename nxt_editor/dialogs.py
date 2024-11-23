@@ -411,30 +411,29 @@ class NxtConfirmDialog(QtWidgets.QMessageBox):
         return False
 
 
-class CopyPrefsDialogue(NxtConfirmDialog):
-    title_text = (f'Copy version {user_dir.UPGRADE_PREFS_FROM_VERSION} '
-                  f'Preferences?')
-    button_text = {
-        NxtConfirmDialog.Ok: f'Copy v'
-                             f'{user_dir.UPGRADE_PREFS_FROM_VERSION} prefs',
-        NxtConfirmDialog.Cancel: 'Use default preferences'
-    }
-    info = ('Would you like to copy preferences from an older version of '
-            'NXT?\nSome things like the window layout may not be preserved.')
-
-    def __int__(self):
-        super(CopyPrefsDialogue, self).__init__(text=self.title_text,
-                                                info=self.info,
-                                                button_text=self.button_text)
+class UpgradePrefsDialogue(NxtConfirmDialog):
+    def __int__(self, title_text, info, button_text):
+        super(UpgradePrefsDialogue, self).__init__(text=title_text,
+                                                   info=info,
+                                                   button_text=button_text)
 
     @classmethod
-    def show_message(cls):
+    def confirm_upgrade_if_possible(cls):
+
         if not user_dir.UPGRADABLE_PREFS:
             return
-        do_upgrade = super().show_message(text=cls.title_text, info=cls.info,
-                                          button_text=cls.button_text)
+        from_version = user_dir.UPGRADE_PREFS_FROM_VERSION
+        title_text = f'Copy version {from_version} Preferences?'
+        button_text = {
+            NxtConfirmDialog.Ok: f'Copy v{from_version} prefs',
+            NxtConfirmDialog.Cancel: 'Use default preferences'
+        }
+        i = ('Would you like to copy preferences from an older version of NXT?'
+             '\nSome things like the window layout may not be preserved.')
+        do_upgrade = super().show_message(text=title_text, info=i,
+                                          button_text=button_text)
         if do_upgrade:
-            user_dir.upgrade_prefs()
+            user_dir.upgrade_prefs(user_dir.UPGRADABLE_PREFS)
 
 
 class UnsavedLayersDialogue(QtWidgets.QDialog):

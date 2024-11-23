@@ -33,8 +33,6 @@ SKIPPOINT_FILE = os.path.join(PREF_DIR, 'skippoints')
 HOTKEYS_PREF = os.path.join(PREF_DIR, 'hotkeys.json')
 MAX_RECENT_FILES = 10
 JSON_PREFS = [USER_PREFS_PATH, BREAKPOINT_FILE, SKIPPOINT_FILE, HOTKEYS_PREF]
-UPGRADABLE_PREFS = []
-UPGRADE_PREFS_FROM_VERSION = -1
 broken_files = {}
 
 
@@ -50,15 +48,17 @@ def ensure_pref_dir_exists():
         raise Exception('Failed to generate user dir {}' + USER_DIR)
 
 
-def check_for_upgradable_prefs():
+def get_upgradable_prefs():
     """
     Identify preference files that can be safely upgraded
     between major editor versions. Only existing preference files
     from the nearest older version are copied; missing files are skipped
-    without warnings.
+    without warnings. Returns a list of prefs that can upgrade and the
+    versio number they're coming from.
+    :returns: (list, int)
     """
-    global UPGRADABLE_PREFS
-    global UPGRADE_PREFS_FROM_VERSION
+    upgradable_prefs = []
+    upgrade_prefs_from_version = -1
     for pref_file in JSON_PREFS:
         if os.path.isfile(pref_file):
             break
@@ -72,20 +72,22 @@ def check_for_upgradable_prefs():
                 if os.path.isfile(old_pref_file):
                     # In the future if we change the structure of the json
                     # prefs we'll need a way to convert them or skip
-                    UPGRADABLE_PREFS.append(old_pref_file)
-            if UPGRADABLE_PREFS:
-                UPGRADE_PREFS_FROM_VERSION = dir_num
+                    upgradable_prefs.append(old_pref_file)
+            if upgradable_prefs:
+                upgrade_prefs_from_version = dir_num
                 break
             dir_num -= 1
+    return upgradable_prefs, upgrade_prefs_from_version
 
 
-def upgrade_prefs():
+def upgrade_prefs(prefs_to_upgrade):
     """
     Copies old 'upgradeable' prefs to current pref dir, will eat and
     exception raised by shutil.copy. In the future this function may do more
     than simply copy.
+    :param prefs_to_upgrade: List of pref filepaths to upgrade
     """
-    for pref_file in UPGRADABLE_PREFS:
+    for pref_file in prefs_to_upgrade:
         try:
             shutil.copy(pref_file, PREF_DIR)
         except Exception as e:
@@ -94,7 +96,8 @@ def upgrade_prefs():
 
 
 ensure_pref_dir_exists()
-check_for_upgradable_prefs()
+# Must check these before we setup the defaults at the bottom of this file
+UPGRADABLE_PREFS, UPGRADE_PREFS_FROM_VERSION = get_upgradable_prefs()
 
 
 class USER_PREF():

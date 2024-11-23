@@ -391,6 +391,7 @@ class NxtConfirmDialog(QtWidgets.QMessageBox):
         self.setIcon(icon)
         self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setStandardButtons(self.Ok | self.Cancel)
+        self.setWindowTitle(text)
         if button_text:
             self.setButtonText(self.Ok, button_text.get(self.Ok, 'Ok'))
             self.setButtonText(self.Cancel, button_text.get(self.Cancel,

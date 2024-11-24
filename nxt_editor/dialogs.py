@@ -391,6 +391,7 @@ class NxtConfirmDialog(QtWidgets.QMessageBox):
         self.setIcon(icon)
         self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setStandardButtons(self.Ok | self.Cancel)
+        self.setWindowTitle(text)
         if button_text:
             self.setButtonText(self.Ok, button_text.get(self.Ok, 'Ok'))
             self.setButtonText(self.Cancel, button_text.get(self.Cancel,
@@ -408,6 +409,31 @@ class NxtConfirmDialog(QtWidgets.QMessageBox):
         if result == dialog.Ok:
             return True
         return False
+
+
+class UpgradePrefsDialogue(NxtConfirmDialog):
+    def __int__(self, title_text, info, button_text):
+        super(UpgradePrefsDialogue, self).__init__(text=title_text,
+                                                   info=info,
+                                                   button_text=button_text)
+
+    @classmethod
+    def confirm_upgrade_if_possible(cls):
+
+        if not user_dir.UPGRADABLE_PREFS:
+            return
+        from_version = user_dir.UPGRADE_PREFS_FROM_VERSION
+        title_text = f'Copy version {from_version} Preferences?'
+        button_text = {
+            NxtConfirmDialog.Ok: f'Copy v{from_version} prefs',
+            NxtConfirmDialog.Cancel: 'Use default preferences'
+        }
+        i = ('Would you like to copy preferences from an older version of NXT?'
+             '\nSome things like the window layout may not be preserved.')
+        do_upgrade = super().show_message(text=title_text, info=i,
+                                          button_text=button_text)
+        if do_upgrade:
+            user_dir.upgrade_prefs(user_dir.UPGRADABLE_PREFS)
 
 
 class UnsavedLayersDialogue(QtWidgets.QDialog):

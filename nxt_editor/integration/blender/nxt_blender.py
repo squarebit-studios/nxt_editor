@@ -26,7 +26,7 @@ nxt_package_name = 'nxt-editor'
 bl_info = {
     "name": "NXT Blender",
     "blender": (3, 4, 0),
-    "version": (0, 3, 0),
+    "version": (0, 4, 0),
     "location": "NXT > Open Editor",
     "wiki_url": "https://nxt-dev.github.io/",
     "tracker_url": "https://github.com/nxt-dev/nxt_editor/issues",
@@ -41,8 +41,9 @@ bl_info = {
 b_major, b_minor, b_patch = bpy.app.version
 if b_major == 2:
     bl_info["blender"] = (2, 80, 0)
-elif b_major != 3:
-    raise RuntimeError('Unsupported major Blender version: {}'.format(b_major))
+elif b_major > 4:
+    raise RuntimeError('NXT does not support Blender version: '
+                       '{}.x'.format(b_major))
 
 
 class BLENDER_PLUGIN_VERSION(object):

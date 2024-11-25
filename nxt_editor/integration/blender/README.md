@@ -23,6 +23,7 @@ installing Python (same version as Blender's) on your machine._
 1. Launch Blender with elevated permissions
 2. Open the addon manager (Edit > Preferences > Add-ons)
 3. Click "Install" and select the `nxt_blender.py` file provided with this addon zip
+   * In newer versions of Blender you need to click the small arrow on the top right and select "Install from Disk".
 4. Enable the `NXT Blender` and twirl down the addon preferences
 5. Click `Install NXT dependencies`
    - It is recommended to open the console window before running the script, so you can see what's happening. Window > Toggle System Console.
